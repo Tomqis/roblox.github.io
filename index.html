@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alert Form</title>
+</head>
+<body>
+
+  <h2>Send Alert</h2>
+
+  <form id="alertForm">
+    <label>Name:</label><br>
+    <input type="text" id="name" required><br><br>
+
+    <label>Reason / Alert:</label><br>
+    <input type="text" id="reason" required><br><br>
+
+    <button type="submit">Send</button>
+  </form>
+
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1129888778148905011/91VYu6trW5VvqIQDniwy-QZ8CpIzzHM-nu7sPvVoAljznzIOix6n8PCClxM82MLeikTz";
+
+    document.getElementById("alertForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const reason = document.getElementById("reason").value;
+
+      const payload = {
+        embeds: [
+          {
+            title: "New Alert",
+            description: "A new alert was submitted.",
+            fields: [
+              {
+                name: "Name",
+                value: name,
+                inline: true
+              },
+              {
+                name: "Alert",
+                value: reason,
+                inline: false
+              }
+            ],
+            footer: {
+              text: "Website Alert System"
+            }
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch(webhookURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          alert("Alert sent to Discord!");
+          document.getElementById("alertForm").reset();
+        } else {
+          alert("Failed to send alert.");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error sending alert.");
+      }
+    });
+  </script>
+
+</body>
+</html>
